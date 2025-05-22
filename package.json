@@ -1,0 +1,20 @@
+{
+  "name": "extension-chrome",
+  "version": "1.0.0",
+  "main": "popup.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc && npm run copy:public",
+    "watch": "tsc --watch",
+    "copy:public": "node copy-files-folders.js .\\public\\ .\\dist\\"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/chrome": "^0.0.307",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
+  }
+}
