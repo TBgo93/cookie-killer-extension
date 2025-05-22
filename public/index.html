@@ -5,81 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cookies killer</title>
   <link rel="stylesheet" href="./simple.min.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      min-width: 260px;
-    }
-
-    h3 {
-      margin: 0;
-      margin-bottom: 1rem;
-    }
-
-    .container-switch {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      span {
-        width: 84px;
-      }
-    }
-
-    input[type="checkbox"] {
-      width: 0;
-      height: 0;
-      margin: 0px;
-      padding: 0px;
-      visibility: hidden;
-      position: absolute;
-    }
-
-    input:checked {
-      & + label {
-        background-color: #244224;
-        box-shadow: 0 0 20px #24422450;
-      }
-
-      & + label:after {
-        left: calc(100% - 6px);
-        transform: translateX(-100%);
-      }
-    }
-
-    label {
-      display: block;
-      width: 60px;
-      height: 30px;
-      background-color: #854747;
-      border-radius: 100px;
-      position: relative;
-      cursor: pointer;
-      transition: 0.5s;
-      box-shadow: 0 0 20px #85474750;
-
-      &::after {
-        content: "";
-        width: 18px;
-        height: 18px;
-        background-color: #e8f5f7;
-        position: absolute;
-        border-radius: 70px;
-        top: 6px;
-        left: 6px;
-        transition: 0.5s;
-      }
-
-      &:active:after {
-        width: 48px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="./index.css">
+  <script type="module" src="./index.js"></script>
 </head>
 <body>
   <main>
@@ -99,6 +26,5 @@
       </div>
     </article>
   </main>
-  <script type="module" src="./index.js" />
 </body>
 </html>
