@@ -1,12 +1,13 @@
 {
   "manifest_version": 3,
   "name": "Cookies killer",
-  "version": "2.0",
+  "version": "0.1",
   "description": "A simple cookie killer",
   "permissions": [
     "scripting",
     "activeTab",
-    "storage"
+    "storage",
+    "tabs"
   ],
   "host_permissions": [
     "https://*/*"
