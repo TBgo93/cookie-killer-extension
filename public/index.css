@@ -44,6 +44,21 @@ input:checked {
   }
 }
 
+input:disabled {
+  cursor: not-allowed;
+
+  &+label {
+    cursor: not-allowed;
+    background-color: #333333;
+    box-shadow: 0 0 20px #33333350;
+    transition: none;
+  }
+
+  &+label:after {
+    transform: none;
+  }
+}
+
 label {
   display: block;
   width: 60px;
