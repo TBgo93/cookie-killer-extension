@@ -58,43 +58,63 @@ async function sendCustomEvent({
   return res;
 }
 
-
 document.addEventListener('DOMContentLoaded', async () => {
+  const switches = document.querySelectorAll<HTMLInputElement>('input[type="checkbox"]');
+
   // Get current tab
   const [currentTab] = await chrome.tabs.query({ active: true, currentWindow: true });
-
-  // Get local state
-  if (currentTab && currentTab.id) {
-    draftState = await handleState({
-      tabId: currentTab.id,
-      action: Actions.readState
-    });
+  if (!currentTab) {
+    return;
+  }
+  if (!currentTab.id) {
+    return;
   }
 
-  const switches = document.querySelectorAll<HTMLInputElement>('input[type="checkbox"]');
-  switches.forEach(switchElement => {
-    const switchName = switchElement.name as SwitchName;
-    switchElement.checked = draftState[switchName];
+  const { id: tabId, url: tabUrl } = currentTab;
 
-    switchElement.addEventListener('change', async () => {
-      const switchName = switchElement.name as SwitchName;
-      const switchValue = switchElement.checked;
+  // Validation if is chrome:// url
+  if (tabUrl?.includes("chrome://")) {
+    switches.forEach(element => {
+      element.disabled = true;
+    });
+
+    return;
+  }
+
+  // Get local state
+  draftState = await handleState({
+    tabId: tabId,
+    action: Actions.readState
+  });
+
+  if (!tabUrl?.includes("twitch.tv")) {
+    const input = document.querySelector<HTMLInputElement>('input[name="twitchAds"]')!;
+    input.checked = false;
+    input.disabled = true;
+  }
+
+  switches.forEach(input => {
+    const switchName = input.name as SwitchName;
+    input.checked = draftState[switchName];
+
+    input.addEventListener('change', async () => {
+      const switchName = input.name as SwitchName;
+      const switchValue = input.checked;
 
       draftState[switchName] = switchValue;
 
-      if (currentTab && currentTab.id) {
-        await handleState({
-          tabId: currentTab.id,
-          action: Actions.writeState,
-          value: JSON.stringify(draftState)
-        });
+      await handleState({
+        tabId: tabId,
+        action: Actions.writeState,
+        value: JSON.stringify(draftState)
+      });
 
-        await sendCustomEvent({
-          tabId: currentTab.id,
-          type: switchName,
-          value: switchValue
-        });
-      }
+      await sendCustomEvent({
+        tabId: tabId,
+        type: switchName,
+        value: switchValue
+      });
+
     });
   });
 });
