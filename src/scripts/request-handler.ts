@@ -1,3 +1,8 @@
+interface ElementState {
+  twitchAds: boolean;
+  twitchOverlay: boolean;
+  cookies: boolean;
+}
 interface State {
   twitchAds: boolean;
   cookies: boolean;
@@ -8,6 +13,11 @@ type EventType = keyof State
 const STATE_KEY = "cookieKillerState";
 const DEFAULT_STATE = { twitchAds: false, cookies: false };
 let storedState: State = DEFAULT_STATE;
+var elementsState = {
+  twitchAds: false,
+  twitchOverlay: false,
+  cookies: false
+}
 
 const state = localStorage.getItem(STATE_KEY);
 if (state) {
@@ -59,40 +69,80 @@ function executeCleanTwitchAds({ isActive }: PropsFn) {
   const observer = new MutationObserver((mutationsList) => {
     const hasMutation = mutationsList.some((mutation) => mutation.type === "childList" && (mutation.addedNodes.length > 0));
     if (hasMutation) {
-      try {
-        const elementAd = document.querySelector<HTMLElement>(".stream-display-ad__container_lower-third");
-        const elementVideo = document.querySelector<HTMLElement>("[data-a-target='video-ref']");
-        if (elementAd && elementVideo) {
-          console.log("Anuncio eliminado.", { elementAd });
-          // elementAd.remove();
-          elementVideo.style.width = "100% important";
-          elementVideo.style.height = "100% important";
-          elementAd.style.display = "none !important";
-        }
-      } catch (error) {
-        console.error("Error al eliminar elemento Ad:", error);
-      }
+      setTimeout(() => {
+        removeTwitchAdOverlay();
+        // removeTwitchAds();
+      }, 500);
 
-      try {
-        const elementOverlay = document.querySelector<HTMLElement>(".player-overlay-background");
-        if (elementOverlay) {
-          console.log("Overlay eliminado.", { elementOverlay });
-          elementOverlay.remove();
-          // Not working because some JS update display property
-          // elementOverlay.style.display = "none";
-        }
-      } catch (error) {
-        console.error("Error al eliminar elemento Overlay:", error);
-      }
+      setTimeout(cleanLocalState, 5000, { elementsState });
     }
-    // for (const mutation of mutationsList) {
-    //   if (mutation.type === 'childList' && (mutation.addedNodes.length > 0)) {
-    //   }
-    // }
   });
   if (isActive) {
     observer.observe(document.body, { childList: true, subtree: true });
   } else {
     observer.disconnect();
+  }
+}
+
+function removeTwitchAds() {
+  if (elementsState.twitchAds) {
+    return;
+  }
+
+  try {
+    const elementAd = document.querySelector<HTMLElement>(".stream-display-ad__container_lower-third");
+    const elementVideo = document.querySelector<HTMLElement>("[data-a-target='video-ref']");
+    if (elementAd && elementVideo) {
+      console.log("Anuncio eliminado.", { elementAd });
+      // elementAd.remove();
+      elementVideo.style.width = "100% important";
+      elementVideo.style.height = "100% important";
+      elementAd.style.display = "none !important";
+
+      elementsState.twitchAds = true;
+    }
+  } catch (error) {
+    console.error("Error al eliminar elemento Ad:", error);
+  }
+}
+
+function removeTwitchAdOverlay() {
+  if (elementsState.twitchOverlay) {
+    return;
+  }
+
+  try {
+    const closeBtn = document.querySelector<HTMLElement>(".player-overlay-background > div > div > button");
+    if (closeBtn) {
+      console.log("Boton cerrar clickado.", { closeBtn });
+      closeBtn.click();
+
+      elementsState.twitchOverlay = true;
+    }
+  } catch (error) {
+    console.error("Error al clickear elemento cerrar overlay:", error);
+  }
+
+  // try {
+  //   const elementOverlay = document.querySelector<HTMLElement>(".player-overlay-background");
+  //   const elementNavigation = document.querySelector<HTMLElement>("[data-a-target='video-ref'] + div");
+  //   if (elementOverlay && elementNavigation) {
+  //     console.log("Overlay eliminado.", { elementOverlay });
+  //     elementOverlay.remove();
+  //     elementNavigation.removeAttribute("hidden")
+  //     // Not working because some JS update display property
+  //     // elementOverlay.style.display = "none";
+
+  //     elementsState.twitchOverlay = true;
+  //   }
+  // } catch (error) {
+  //   console.error("Error al eliminar elemento Overlay:", error);
+  // }
+}
+
+function cleanLocalState({ elementsState }: { elementsState: ElementState }) {
+  for (const key of Object.keys(elementsState)) {
+    const typedKey = key as keyof ElementState;
+    elementsState[typedKey] = false;
   }
 }
