@@ -122,22 +122,6 @@ function removeTwitchAdOverlay() {
   } catch (error) {
     console.error("Error al clickear elemento cerrar overlay:", error);
   }
-
-  // try {
-  //   const elementOverlay = document.querySelector<HTMLElement>(".player-overlay-background");
-  //   const elementNavigation = document.querySelector<HTMLElement>("[data-a-target='video-ref'] + div");
-  //   if (elementOverlay && elementNavigation) {
-  //     console.log("Overlay eliminado.", { elementOverlay });
-  //     elementOverlay.remove();
-  //     elementNavigation.removeAttribute("hidden")
-  //     // Not working because some JS update display property
-  //     // elementOverlay.style.display = "none";
-
-  //     elementsState.twitchOverlay = true;
-  //   }
-  // } catch (error) {
-  //   console.error("Error al eliminar elemento Overlay:", error);
-  // }
 }
 
 function cleanLocalState({ elementsState }: { elementsState: ElementState }) {
