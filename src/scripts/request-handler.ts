@@ -94,7 +94,7 @@ function removeTwitchAds() {
     const elementVideo = document.querySelector<HTMLElement>("[data-a-target='video-ref']");
     if (elementAd && elementVideo) {
       console.log("Anuncio eliminado.", { elementAd });
-      // elementAd.remove();
+
       elementVideo.style.width = "100% important";
       elementVideo.style.height = "100% important";
       elementAd.style.display = "none !important";
