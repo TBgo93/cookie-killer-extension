@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Cookies killer",
-  "version": "0.2.2",
+  "version": "0.4.0",
   "description": "A simple cookie killer",
   "permissions": [
     "scripting",
@@ -27,6 +27,6 @@
   },
   "content_scripts": [{
     "matches": ["<all_urls>"],
-    "js": ["scripts/request-handler.js"]
+    "js": ["scripts/index.js"]
   }]
 }
