@@ -1,21 +1,16 @@
 interface ElementState {
-  twitchAds: boolean;
-  twitchOverlay: boolean;
   cookies: boolean;
 }
 interface State {
-  twitchAds: boolean;
   cookies: boolean;
 };
 
 type EventType = keyof State
 
-const STATE_KEY = "cookieKillerState";
-const DEFAULT_STATE = { twitchAds: false, cookies: false };
+const STATE_KEY = "cookie_killer_state";
+const DEFAULT_STATE = {  cookies: false };
 let storedState: State = DEFAULT_STATE;
 var elementsState = {
-  twitchAds: false,
-  twitchOverlay: false,
   cookies: false
 }
 
@@ -50,9 +45,6 @@ chrome.runtime.onMessage.addListener(
       const type = request.type as EventType;
       const value = request.value as boolean;
 
-      if (type === "twitchAds") {
-        executeCleanTwitchAds({ isActive: value });
-      }
       if (type === "cookies") {
         console.log("Not implemented yet");
       }
@@ -60,69 +52,6 @@ chrome.runtime.onMessage.addListener(
   }
 );
 
-// Functions
-interface PropsFn {
-  isActive: boolean;
-}
-
-function executeCleanTwitchAds({ isActive }: PropsFn) {
-  const observer = new MutationObserver((mutationsList) => {
-    const hasMutation = mutationsList.some((mutation) => mutation.type === "childList" && (mutation.addedNodes.length > 0));
-    if (hasMutation) {
-      setTimeout(() => {
-        removeTwitchAdOverlay();
-        // removeTwitchAds();
-      }, 500);
-
-      setTimeout(cleanLocalState, 5000, { elementsState });
-    }
-  });
-  if (isActive) {
-    observer.observe(document.body, { childList: true, subtree: true });
-  } else {
-    observer.disconnect();
-  }
-}
-
-function removeTwitchAds() {
-  if (elementsState.twitchAds) {
-    return;
-  }
-
-  try {
-    const elementAd = document.querySelector<HTMLElement>(".stream-display-ad__container_lower-third");
-    const elementVideo = document.querySelector<HTMLElement>("[data-a-target='video-ref']");
-    if (elementAd && elementVideo) {
-      console.log("Anuncio eliminado.", { elementAd });
-
-      elementVideo.style.width = "100% important";
-      elementVideo.style.height = "100% important";
-      elementAd.style.display = "none !important";
-
-      elementsState.twitchAds = true;
-    }
-  } catch (error) {
-    console.error("Error al eliminar elemento Ad:", error);
-  }
-}
-
-function removeTwitchAdOverlay() {
-  if (elementsState.twitchOverlay) {
-    return;
-  }
-
-  try {
-    const closeBtn = document.querySelector<HTMLElement>(".player-overlay-background > div > div > button");
-    if (closeBtn) {
-      console.log("Boton cerrar clickado.", { closeBtn });
-      closeBtn.click();
-
-      elementsState.twitchOverlay = true;
-    }
-  } catch (error) {
-    console.error("Error al clickear elemento cerrar overlay:", error);
-  }
-}
 
 function cleanLocalState({ elementsState }: { elementsState: ElementState }) {
   for (const key of Object.keys(elementsState)) {

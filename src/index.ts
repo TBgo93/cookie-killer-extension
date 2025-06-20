@@ -1,4 +1,4 @@
-type SwitchName = "twitchAds" | "cookies";
+type SwitchName = "cookies";
 
 type RequestAction = "writeState" | "readState";
 
@@ -59,7 +59,7 @@ async function sendCustomEvent({
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const switches = document.querySelectorAll<HTMLInputElement>('input[type="checkbox"]');
+  const checkboxSwitch = document.querySelector<HTMLInputElement>('input[type="checkbox"]') as HTMLInputElement;
 
   // Get current tab
   const [currentTab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -74,9 +74,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Validation if is chrome:// url
   if (tabUrl?.includes("chrome://")) {
-    switches.forEach(element => {
-      element.disabled = true;
-    });
+    checkboxSwitch.disabled = true;
 
     return;
   }
@@ -87,34 +85,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     action: Actions.readState
   });
 
-  if (!tabUrl?.includes("twitch.tv")) {
-    const input = document.querySelector<HTMLInputElement>('input[name="twitchAds"]')!;
-    input.checked = false;
-    input.disabled = true;
-  }
+  const switchName = checkboxSwitch.name as SwitchName;
+  checkboxSwitch.checked = draftState[switchName];
 
-  switches.forEach(input => {
-    const switchName = input.name as SwitchName;
-    input.checked = draftState[switchName];
+  checkboxSwitch.addEventListener('change', async () => {
+    const switchName = checkboxSwitch.name as SwitchName;
+    const switchValue = checkboxSwitch.checked;
 
-    input.addEventListener('change', async () => {
-      const switchName = input.name as SwitchName;
-      const switchValue = input.checked;
+    draftState[switchName] = switchValue;
 
-      draftState[switchName] = switchValue;
-
-      await handleState({
-        tabId: tabId,
-        action: Actions.writeState,
-        value: JSON.stringify(draftState)
-      });
-
-      await sendCustomEvent({
-        tabId: tabId,
-        type: switchName,
-        value: switchValue
-      });
-
+    await handleState({
+      tabId: tabId,
+      action: Actions.writeState,
+      value: JSON.stringify(draftState)
     });
+
+    await sendCustomEvent({
+      tabId: tabId,
+      type: switchName,
+      value: switchValue
+    });
+
   });
 });
