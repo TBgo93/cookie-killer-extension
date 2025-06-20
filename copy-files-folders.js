@@ -1,5 +1,5 @@
-import { existsSync, statSync, mkdirSync, readdirSync, copyFileSync } from 'fs';
-import { join } from 'path';
+import { existsSync, statSync, mkdirSync, readdirSync, copyFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 function copyRecursiveSync(src, dest) {
   const exists = existsSync(src);
