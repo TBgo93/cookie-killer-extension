@@ -23,7 +23,7 @@ function deleteTwitchAdsBanner() {
       elementVideo.style.setProperty("height", "100%", "important");
 
       elementContainerVideo.style.setProperty("width", "100%", "important");
-      elementContainerVideo.style.setProperty("height", "auto", "important");
+      elementContainerVideo.style.setProperty("height", "100%", "important");
 
       elementAd.style.setProperty("display", "none", "important");
       elementAd.style.setProperty("height", "auto", "important");
