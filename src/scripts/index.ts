@@ -38,19 +38,31 @@ interface PropsNewMutationObserver {
   callback: Function;
   mutationType: MutationRecordType;
   delay?: number;
+  limit?: number;
 }
 
 function newMutationObserver({
   callback,
   mutationType,
-  delay
+  delay,
+  limit
 }: PropsNewMutationObserver) {
   console.log("newMutationObserver", { callback, mutationType, delay });
-  return new MutationObserver((mutationsList) => {
+  let executionCount = 0;
+
+  return new MutationObserver((mutationsList, obs) => {
     const hasMutation = mutationsList.some((mutation) => mutation.type === mutationType && (mutation.addedNodes.length > 0));
     if (!hasMutation) {
       return;
     }
+
+    if(limit && executionCount >= limit) {
+      console.log(`"Se ha desconectado el observer luego de superar las ${limit} execuciones.`);
+      obs.disconnect();
+      return;
+    }
+
+    executionCount++;
 
     if (delay) {
       setTimeout(callback, delay);
@@ -67,7 +79,8 @@ const twitchAdsObserver = newMutationObserver({
 
 const twitchAdsBannerObserver = newMutationObserver({
   callback: deleteTwitchAdsBanner,
-  mutationType: "childList"
+  mutationType: "childList",
+  limit: 3
 });
 
 if (!window.location.origin.includes("twitch.tv")) {
