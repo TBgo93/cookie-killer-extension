@@ -102,6 +102,8 @@ if (!window.location.origin.includes("twitch.tv")) {
 }
 
 const [main] = document.getElementsByTagName("main");
+if (main) {
+  twitchAdsObserver.observe(main, { childList: true, subtree: true });
+  twitchAdsBannerObserver.observe(main, { childList: true, subtree: true });
+}
 
-twitchAdsObserver.observe(main, { childList: true, subtree: true });
-twitchAdsBannerObserver.observe(main, { childList: true, subtree: true });
