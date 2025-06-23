@@ -26,8 +26,8 @@ function deleteTwitchAdsBanner() {
       elementContainerVideo.style.setProperty("height", "100%", "important");
 
       elementAd.style.setProperty("display", "none", "important");
-      elementAd.style.setProperty("height", "auto", "important");
-      elementAd.style.setProperty("width", "auto", "important");
+      elementAd.style.setProperty("height", "0", "important");
+      elementAd.style.setProperty("width", "0", "important");
     }
   } catch (error) {
     console.error("Error al eliminar elemento Ad banner:", { error });
@@ -45,10 +45,10 @@ function newMutationObserver({
   callback,
   mutationType,
   delay,
-  limit
+  // limit
 }: PropsNewMutationObserver) {
   console.log("newMutationObserver", { callback, mutationType, delay });
-  let executionCount = 0;
+  // let executionCount = 0;
 
   return new MutationObserver((mutationsList, obs) => {
     const hasMutation = mutationsList.some((mutation) => mutation.type === mutationType && (mutation.addedNodes.length > 0));
@@ -56,13 +56,14 @@ function newMutationObserver({
       return;
     }
 
-    if(limit && executionCount >= limit) {
-      console.log(`"Se ha desconectado el observer luego de superar las ${limit} execuciones.`);
-      obs.disconnect();
-      return;
-    }
+    // console.log({ executionCount, limit, callback });
+    // if(limit && executionCount > limit) {
+    //   console.log(`Se ha desconectado el observer luego de superar las ${limit} execuciones.`);
+    //   obs.disconnect();
+    //   return;
+    // }
 
-    executionCount++;
+    // executionCount++;
 
     if (delay) {
       setTimeout(callback, delay);
