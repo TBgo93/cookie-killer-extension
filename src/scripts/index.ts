@@ -58,8 +58,10 @@ function newMutationObserver({
   log.debug("newMutationObserver", { callback, mutationType, delay });
   // let executionCount = 0;
 
-  return new MutationObserver((mutationsList, obs) => {
-    const hasMutation = mutationsList.some((mutation) => mutation.type === mutationType && (mutation.addedNodes.length > 0));
+  return new MutationObserver((mutationsList, _obs) => {
+    const hasMutation = mutationsList.some(
+      (mutation) => mutation.type === mutationType && mutation.target.nodeName === "DIV" && (mutation.addedNodes.length > 0)
+    );
     if (!hasMutation) {
       return;
     }
