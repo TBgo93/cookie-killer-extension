@@ -2,15 +2,10 @@ const log = {
   debug: (message?: any, ...optionalParams: any[]) => console.log(`[${new Date().toLocaleTimeString()}] - ${message}`, ...optionalParams),
 } as const;
 
-function awaiting(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 function deleteTwitchAdOverlay() {
   try {
     const closeBtn = document.querySelector<HTMLElement>(".player-overlay-background > div > div > button");
     if (closeBtn) {
-      awaiting(500);
       closeBtn.click();
       log.debug("Elemento cerrado", { closeBtn });
     }
@@ -27,8 +22,6 @@ function deleteTwitchAdsBanner() {
 
     if (elementAd && elementVideo && elementContainerVideo) {
       log.debug("Banner eliminado.", { elementAd, elementVideo, elementContainerVideo });
-
-      awaiting(500);
 
       elementVideo.style.setProperty("width", "100%", "important");
       elementVideo.style.setProperty("height", "100%", "important");
@@ -78,7 +71,6 @@ function newMutationObserver({
     // }
 
     // executionCount++;
-
     if (delay) {
       setTimeout(callback, delay);
     } else {
@@ -90,13 +82,14 @@ function newMutationObserver({
 
 const twitchAdsObserver = newMutationObserver({
   callback: deleteTwitchAdOverlay,
-  mutationType: "childList"
+  mutationType: "childList",
+  delay: 250
 });
 
 const twitchAdsBannerObserver = newMutationObserver({
   callback: deleteTwitchAdsBanner,
   mutationType: "childList",
-  limit: 3
+  delay: 250
 });
 
 if (!window.location.origin.includes("twitch.tv")) {
@@ -111,5 +104,6 @@ const [main] = document.getElementsByTagName("main");
 if (main) {
   twitchAdsObserver.observe(main, { childList: true, subtree: true });
   twitchAdsBannerObserver.observe(main, { childList: true, subtree: true });
+  log.debug("Se han conectado los observers de twitch ads");
 }
 
