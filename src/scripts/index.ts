@@ -1,9 +1,5 @@
 const log = {
-  dateTime: () => new Date().toLocaleTimeString(),
-  debug: (message: string, ...data: Array<any>) => console.log(new Date().toLocaleTimeString(), '\x1b[90m%s\x1b[0m', message, ...data),
-  info: (message: string, ...data: Array<any>) => console.log(new Date().toLocaleTimeString(), '\x1b[32m%s\x1b[0m', message, ...data),
-  warn: (message: string, ...data: Array<any>) => console.warn(new Date().toLocaleTimeString(), '\x1b[33m%s\x1b[0m', message, ...data),
-  error: (message: string, ...data: Array<any>) => console.log(new Date().toLocaleTimeString(), '\x1b[31m%s\x1b[0m', message, ...data),
+  debug: (message?: any, ...optionalParams: any[]) => console.log(`[${new Date().toLocaleTimeString()}] - ${message}`, ...optionalParams),
 } as const;
 
 function awaiting(ms: number) {
@@ -19,7 +15,7 @@ function deleteTwitchAdOverlay() {
       log.debug("Elemento cerrado", { closeBtn });
     }
   } catch (error) {
-    log.error("Error al clickear elemento cerrar overlay:", { error });
+    log.debug("Error al clickear elemento cerrar overlay:", { error });
   }
 }
 
@@ -45,7 +41,7 @@ function deleteTwitchAdsBanner() {
       elementAd.style.setProperty("width", "0", "important");
     }
   } catch (error) {
-    log.error("Error al eliminar elemento Ad banner:", { error });
+    log.debug("Error al eliminar elemento Ad banner:", { error });
   }
 }
 
