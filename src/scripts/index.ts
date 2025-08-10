@@ -1,14 +1,20 @@
 const log = {
-  debug: (message: string, ...data: Array<any>) => console.log('\x1b[90m%s\x1b[0m', message, ...data),
-  info: (message: string, ...data: Array<any>) => console.log('\x1b[32m%s\x1b[0m', message, ...data),
-  warn: (message: string, ...data: Array<any>) => console.warn('\x1b[33m%s\x1b[0m', message, ...data),
-  error: (message: string, ...data: Array<any>) => console.log('\x1b[31m%s\x1b[0m', message, ...data),
+  dateTime: () => new Date().toLocaleTimeString(),
+  debug: (message: string, ...data: Array<any>) => console.log(new Date().toLocaleTimeString(), '\x1b[90m%s\x1b[0m', message, ...data),
+  info: (message: string, ...data: Array<any>) => console.log(new Date().toLocaleTimeString(), '\x1b[32m%s\x1b[0m', message, ...data),
+  warn: (message: string, ...data: Array<any>) => console.warn(new Date().toLocaleTimeString(), '\x1b[33m%s\x1b[0m', message, ...data),
+  error: (message: string, ...data: Array<any>) => console.log(new Date().toLocaleTimeString(), '\x1b[31m%s\x1b[0m', message, ...data),
 } as const;
+
+function awaiting(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 function deleteTwitchAdOverlay() {
   try {
     const closeBtn = document.querySelector<HTMLElement>(".player-overlay-background > div > div > button");
     if (closeBtn) {
+      awaiting(500);
       closeBtn.click();
       log.debug("Elemento cerrado", { closeBtn });
     }
@@ -25,6 +31,8 @@ function deleteTwitchAdsBanner() {
 
     if (elementAd && elementVideo && elementContainerVideo) {
       log.debug("Banner eliminado.", { elementAd, elementVideo, elementContainerVideo });
+
+      awaiting(500);
 
       elementVideo.style.setProperty("width", "100%", "important");
       elementVideo.style.setProperty("height", "100%", "important");
